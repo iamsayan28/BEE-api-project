@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 20px;
+      color: #333;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .section {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .section h2 {
+      margin-bottom: 15px;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    input, button {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      cursor: pointer;
+    }
+    .results {
+      margin-top: 10px;
+      padding: 10px;
+      background: #f1f1f1;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Admin Panel</h1>
+
+  <!-- User Management -->
+  <div class="section">
+    <h2>User Management</h2>
+    <div class="controls">
+      <input type="text" id="userId" placeholder="User ID">
+      <input type="text" id="userName" placeholder="User Name">
+      <button id="userCreateBtn">Create</button>
+      <button id="userGetBtn">Get</button>
+      <button id="userUpdateBtn">Update</button>
+      <button id="userDeleteBtn">Delete</button>
+      <button id="userGetAllBtn">Get All</button>
+    </div>
+    <div id="userResult" class="results"></div>
+  </div>
+
+  <!-- Movie Management -->
+  <div class="section">
+    <h2>Movie Management</h2>
+    <div class="controls">
+      <input type="text" id="movieId" placeholder="Movie ID">
+      <input type="text" id="movieTitle" placeholder="Movie Title">
+      <input type="text" id="movieShowtime" placeholder="Showtime">
+      <input type="number" id="movieSeats" placeholder="Available Seats">
+      <button id="movieCreateBtn">Create</button>
+      <button id="movieGetBtn">Get</button>
+      <button id="movieUpdateBtn">Update</button>
+      <button id="movieDeleteBtn">Delete</button>
+      <button id="movieGetAllBtn">Get All</button>
+    </div>
+    <div id="movieResult" class="results"></div>
+  </div>
+
+  <!-- Booking Management -->
+  <div class="section">
+    <h2>Booking Management</h2>
+    <div class="controls">
+      <input type="text" id="bookingId" placeholder="Booking ID">
+      <input type="text" id="bookingUserId" placeholder="User ID">
+      <input type="text" id="bookingMovieId" placeholder="Movie ID">
+      <input type="number" id="bookingSeats" placeholder="Seats">
+      <button id="bookingCreateBtn">Create</button>
+      <button id="bookingGetBtn">Get</button>
+      <button id="bookingUpdateBtn">Update</button>
+      <button id="bookingDeleteBtn">Delete</button>
+      <button id="bookingGetAllBtn">Get All</button>
+    </div>
+    <div id="bookingResult" class="results"></div>
+  </div>
+
+  <script>
+    const API = 'http://localhost:3000';
+
+    // ===== USERS =====
+    document.getElementById('userCreateBtn').onclick = async () => {
+      const id = userId.value;
+      const name = userName.value;
+      const res = await fetch(`${API}/users?id=${id}&name=${name}`, { method: 'POST' });
+      alert(await res.text());
+    };
+
+    document.getElementById('userGetBtn').onclick = async () => {
+      const id = userId.value;
+      const res = await fetch(`${API}/users/${id}`);
+      const data = await res.json();
+      userResult.innerHTML = `<div>ID: ${data.id}, Name: ${data.name}</div>`;
+    };
+
+    document.getElementById('userUpdateBtn').onclick = async () => {
+      const id = userId.value;
+      const name = userName.value;
+      const res = await fetch(`${API}/users/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name })
+      });
+      alert(await res.text());
+    };
+
+    document.getElementById('userDeleteBtn').onclick = async () => {
+      const id = userId.value;
+      const res = await fetch(`${API}/users/${id}`, { method: 'DELETE' });
+      alert(await res.text());
+    };
+
+    document.getElementById('userGetAllBtn').onclick = async () => {
+      const res = await fetch(`${API}/users`);
+      const data = await res.json();
+      userResult.innerHTML = data.map(u => `<div>ID: ${u.id}, Name: ${u.name}</div>`).join('');
+    };
+
+    // ===== MOVIES =====
+    document.getElementById('movieCreateBtn').onclick = async () => {
+      const id = movieId.value;
+      const title = movieTitle.value;
+      const showtime = movieShowtime.value;
+      const availableSeats = movieSeats.value;
+      const res = await fetch(`${API}/movies?id=${id}&title=${title}&showtime=${showtime}&availableSeats=${availableSeats}`, { method: 'POST' });
+      alert(await res.text());
+    };
+
+    document.getElementById('movieGetBtn').onclick = async () => {
+      const id = movieId.value;
+      const res = await fetch(`${API}/movies/${id}`);
+      const data = await res.json();
+      movieResult.innerHTML = `<div>ID: ${data.id}, Title: ${data.title}, Showtime: ${data.showtime}, Seats: ${data.availableSeats}</div>`;
+    };
+
+    document.getElementById('movieUpdateBtn').onclick = async () => {
+      const id = movieId.value;
+      const title = movieTitle.value;
+      const showtime = movieShowtime.value;
+      const availableSeats = movieSeats.value;
+      const res = await fetch(`${API}/movies/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, showtime, availableSeats })
+      });
+      alert(await res.text());
+    };
+
+    document.getElementById('movieDeleteBtn').onclick = async () => {
+      const id = movieId.value;
+      const res = await fetch(`${API}/movies/${id}`, { method: 'DELETE' });
+      alert(await res.text());
+    };
+
+    document.getElementById('movieGetAllBtn').onclick = async () => {
+      const res = await fetch(`${API}/movies`);
+      const data = await res.json();
+      movieResult.innerHTML = data.map(m => `<div>ID: ${m.id}, Title: ${m.title}, Showtime: ${m.showtime}, Seats: ${m.availableSeats}</div>`).join('');
+    };
+
+    // ===== BOOKINGS =====
+    document.getElementById('bookingCreateBtn').onclick = async () => {
+      const id = bookingId.value;
+      const userIdVal = bookingUserId.value;
+      const movieIdVal = bookingMovieId.value;
+      const seats = bookingSeats.value;
+      const res = await fetch(`${API}/bookings?id=${id}&userId=${userIdVal}&movieId=${movieIdVal}&seats=${seats}`, { method: 'POST' });
+      alert(await res.text());
+    };
+
+    document.getElementById('bookingGetBtn').onclick = async () => {
+      const id = bookingId.value;
+      const res = await fetch(`${API}/bookings/${id}`);
+      const data = await res.json();
+      bookingResult.innerHTML = `<div>ID: ${data.id}, User: ${data.userId}, Movie: ${data.movieId}, Seats: ${data.seats}</div>`;
+    };
+
+    document.getElementById('bookingUpdateBtn').onclick = async () => {
+      const id = bookingId.value;
+      const userIdVal = bookingUserId.value;
+      const movieIdVal = bookingMovieId.value;
+      const seats = bookingSeats.value;
+      const res = await fetch(`${API}/bookings/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: userIdVal, movieId: movieIdVal, seats })
+      });
+      alert(await res.text());
+    };
+
+    document.getElementById('bookingDeleteBtn').onclick = async () => {
+      const id = bookingId.value;
+      const res = await fetch(`${API}/bookings/${id}`, { method: 'DELETE' });
+      alert(await res.text());
+    };
+
+    document.getElementById('bookingGetAllBtn').onclick = async () => {
+      const res = await fetch(`${API}/bookings`);
+      const data = await res.json();
+      bookingResult.innerHTML = data.map(b => `<div>ID: ${b.id}, User: ${b.userId}, Movie: ${b.movieId}, Seats: ${b.seats}</div>`).join('');
+    };
+  </script>
+</body>
+</html>
